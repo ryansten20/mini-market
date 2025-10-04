@@ -1,15 +1,33 @@
 import { Link } from "react-router-dom";
+import "./Nav.css";
 
 export default function Nav() {
     return (
-        <nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
-            <Link to="/" className="text-xl font-bold">Mini Market</Link>
-            <ul className="flex gap-6">
-                <li><Link to="/" className="hover:text-gray-300">Home</Link></li>
-                <li><Link to="/cart" className="hover:text-gray-300">Cart</Link></li>
-                <li><Link to="/login" className="hover:text-gray-300">Login</Link></li>
-                <li><Link to="/register" className="hover:text-gray-300">Register</Link></li>
-            </ul>
+        <nav className="nav-container">
+            <div className="flex justify-between items-center">
+                <Link to="/" className="nav-brand">
+                    <span className="nav-brand-highlight">Mini</span> Market
+                </Link>
+                <div className="nav-search-container">
+                    <div className="flex">
+                         <input 
+                             type="text" 
+                             placeholder="Search products..."
+                             className="nav-search-input"
+                         />
+                         <button className="nav-search-button">
+                             <i className="bi bi-search"></i>
+                         </button>
+                    </div>
+                </div>
+                
+                <div className="nav-links">
+                    <Link to="/" className="nav-link">Home</Link>
+                    <Link to="/cart" className="nav-link">Cart</Link>
+                    <Link to="/login" className="nav-link">Login</Link>
+                    <Link to="/register" className="nav-link">Register</Link>
+                </div>
+            </div>
         </nav>
     );
 }
