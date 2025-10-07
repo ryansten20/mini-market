@@ -6,7 +6,7 @@ export default function Nav() {
         <nav className="nav-container">
             <div className="flex justify-between items-center">
                 <Link to="/" className="nav-brand">
-                    <span className="nav-brand-highlight">Mini</span> Market
+                    <span className="nav-brand-highlight">Congo</span>
                 </Link>
                 <div className="nav-search-container">
                     <div className="flex">
@@ -23,6 +23,7 @@ export default function Nav() {
                 
                 <div className="nav-links">
                     <Link to="/" className="nav-link">Home</Link>
+                    <Link to="/crime" className="nav-link">Crime Video</Link>
                     <Link to="/cart" className="nav-link">Cart</Link>
                     <Link to="/login" className="nav-link">Login</Link>
                     <Link to="/register" className="nav-link">Register</Link>
