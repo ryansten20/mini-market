@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./CategorySection.css";
 
-export default function CategorySection({ title, images, captions = [], description = "", productIds = [] }) {
+export default function CategorySection({ title, images, captions = [], description = "", productIds = [], allProducts = [] }) {
     const navigate = useNavigate();
     
     // If only one image is provided, use it for all 4 slots
@@ -16,7 +16,45 @@ export default function CategorySection({ title, images, captions = [], descript
     const productIdArray = productIds.length > 0 ? productIds : defaultProductIds;
     
     const handleImageClick = (productId) => {
+        // Find the product data from the allProducts array
+        const product = allProducts.find(p => p.id === productId);
+        
+        if (product) {
+            // Store product data in localStorage
+            localStorage.setItem(`product_${productId}`, JSON.stringify(product));
+        }
+        
         navigate(`/products/${productId}`);
+    };
+
+    const handleCategoryClick = () => {
+        // Filter products by category and store in localStorage
+        const categoryProducts = allProducts.filter(product => {
+            // Map display category names to internal category names
+            const categoryMap = {
+                'Games': 'gaming',
+                'Tools': 'outdoor',
+                'Audio': 'electronics',
+                'Kitchen': 'kitchen',
+                'Vinyl Records': 'music',
+                'Movies': 'movies',
+                'Shoes': 'clothing',
+                'Winter Clothing': 'clothing',
+                'Autum Clothing': 'clothing',
+                'Seasonal and Holiday': 'seasonal',
+                'Arts & Crafts': 'arts',
+                'Gym & Fitness': 'fitness'
+            };
+            
+            const internalCategory = categoryMap[title] || title?.toLowerCase();
+            return product.category === internalCategory;
+        });
+        
+        // Store filtered products in localStorage
+        localStorage.setItem(`category_${encodeURIComponent(title)}`, JSON.stringify(categoryProducts));
+        
+        // Navigate to ProductList page with category name as parameter
+        navigate(`/category/${encodeURIComponent(title)}`);
     };
     
     return (
@@ -44,7 +82,7 @@ export default function CategorySection({ title, images, captions = [], descript
                 </div>
             </div>
             <div className="category-button-container">
-                <button className="category-button">Shop {title}</button>
+                <button className="category-button" onClick={handleCategoryClick}>Shop {title}</button>
             </div>
         </div>
     );

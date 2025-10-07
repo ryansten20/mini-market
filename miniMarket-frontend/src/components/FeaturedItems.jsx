@@ -22,6 +22,14 @@ export default function FeaturedItems({ title = "Featured Items", products }) {
     };
 
     const handleImageClick = (productId) => {
+        // Find the product data from the products array
+        const product = displayProducts.find(p => p.id === productId);
+        
+        if (product) {
+            // Store product data in localStorage
+            localStorage.setItem(`product_${productId}`, JSON.stringify(product));
+        }
+        
         navigate(`/products/${productId}`);
     };
 
