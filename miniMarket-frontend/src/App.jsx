@@ -6,13 +6,14 @@ import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import "./App.css";
 
 function App() {
     return (
         <BrowserRouter>
             <div className="flex-col">
                 <Nav />
-                <main className="flex-grow container mx-auto px-4 py-6">
+                <main className="flex-grow">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/products/:id" element={<Product />} />
