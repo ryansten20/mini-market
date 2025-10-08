@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "./Login.css";
 import React, {useState} from "react";
-import logo from "../assets/mini.png";
+import logo from "../assets/congo.png";
 
 export default function Register() {
     const [form, setForm] = useState({
