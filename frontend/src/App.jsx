@@ -8,6 +8,7 @@ import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Crime from "./pages/crime"
+import {CartProvider} from "./context/CartContext.jsx";
 import "./App.css";
 
 function App() {

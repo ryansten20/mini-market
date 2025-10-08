@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect,  useContext } from "react";
 import BootstrapStarRating from "../components/BootstrapStarRating";
+import { CartContext } from "../context/CartContext";
 import "./Product.css";
 
 export default function Product() {
@@ -8,6 +9,7 @@ export default function Product() {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { addToCart } = useContext(CartContext);
 
     useEffect(() => {
         // Retrieve product data from localStorage
@@ -110,7 +112,7 @@ export default function Product() {
                             {/* Action Buttons Column */}
                             <div className="product-actions-column">
                                 <div className="product-actions">
-                                    <button className="add-to-cart-btn">
+                                    <button onClick={() => addToCart(product)} className="add-to-cart-btn">
                                         Add to Cart
                                     </button>
                                 </div>
