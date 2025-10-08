@@ -3,10 +3,25 @@ import BootstrapStarRating from "../components/BootstrapStarRating";
 import "./ProductList.css";
 
 export default function ProductList() {
-    const { category } = useParams();
+    const { category, query } = useParams();
     const navigate = useNavigate();
 
-    // Get products from localStorage
+    // Determine if this is a search or category view
+    const isSearch = window.location.pathname.startsWith('/search/');
+    const searchQuery = isSearch ? decodeURIComponent(query) : null;
+
+    // Get all products from localStorage
+    const getAllProducts = () => {
+        try {
+            const storedProducts = localStorage.getItem('allProducts');
+            return storedProducts ? JSON.parse(storedProducts) : [];
+        } catch (error) {
+            console.error('Error parsing all products from localStorage:', error);
+            return [];
+        }
+    };
+
+    // Get products by category from localStorage
     const getCategoryProducts = () => {
         try {
             const storedProducts = localStorage.getItem(`category_${encodeURIComponent(category)}`);
@@ -17,11 +32,33 @@ export default function ProductList() {
         }
     };
 
-    const categoryProducts = getCategoryProducts();
+    // Search function to filter products
+    const searchProducts = (products, searchTerm) => {
+        if (!searchTerm) return products;
+        
+        const term = searchTerm.toLowerCase();
+        return products.filter(product => 
+            product.name.toLowerCase().includes(term) ||
+            product.description.toLowerCase().includes(term) ||
+            product.category.toLowerCase().includes(term)
+        );
+    };
+
+    // Get the appropriate products based on the route
+    const getProducts = () => {
+        if (isSearch) {
+            const allProducts = getAllProducts();
+            return searchProducts(allProducts, searchQuery);
+        } else {
+            return getCategoryProducts();
+        }
+    };
+
+    const products = getProducts();
 
     const handleImageClick = (productId) => {
         // Find the product data from the products array
-        const product = categoryProducts.find(p => p.id === productId);
+        const product = products.find(p => p.id === productId);
         
         if (product) {
             // Store product data in localStorage
@@ -39,17 +76,17 @@ export default function ProductList() {
         <div className="product-list-container">
             <div className="product-list-header">
                 <h1 className="product-list-title">
-                    {category ? `Products in ${category}` : 'All Products'}
+                    {isSearch ? `Search results for "${searchQuery}"` : `Products in ${category}`}
                 </h1>
             </div>
             
-            {categoryProducts.length === 0 ? (
+            {products.length === 0 ? (
                 <div className="no-products">
-                    <p>No products found in the "{category}" category.</p>
+                    <p>{isSearch ? `No products found for "${searchQuery}"` : `No products found in the "${category}" category.`}</p>
                 </div>
             ) : (
                 <div className="products-grid">
-                    {categoryProducts.map((product) => (
+                    {products.map((product) => (
                         <div key={product.id} className="product-card">
                             <div className="product-image-container">
                                 <img 

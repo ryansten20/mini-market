@@ -1,5 +1,6 @@
 import FeaturedItems from '../components/FeaturedItems';
 import CategorySection from '../components/CategorySection';
+import { useEffect } from 'react';
 
 export default function Home() {
     // Unified product database - all products in one place
@@ -108,7 +109,7 @@ export default function Home() {
         },
         {
             id: 12,
-            name: "Keyboard",
+            name: " GamingKeyboard",
             price: 89.99,
             image: "/src/assets/keyboard.jpg",
             description: "Mechanical gaming keyboard with RGB backlighting, tactile switches, and programmable macro keys. Built for precision and durability.",
@@ -117,7 +118,7 @@ export default function Home() {
         },
         {
             id: 13,
-            name: "GPU",
+            name: "RTX 5070Ti GPU",
             price: 899.99,
             image: "/src/assets/gpu.jpg",
             description: "High-performance graphics card with ray tracing technology and AI acceleration. Perfect for 4K gaming and content creation.",
@@ -126,7 +127,7 @@ export default function Home() {
         },
         {
             id: 14,
-            name: "Mouse",
+            name: "Logitech G502 Mouse",
             price: 49.99,
             image: "/src/assets/mouse.jpg",
             description: "Precision gaming mouse with adjustable DPI, programmable buttons, and ergonomic design. Built for competitive gaming.",
@@ -135,7 +136,7 @@ export default function Home() {
         },
         {
             id: 15,
-            name: "Microphone",
+            name: "Blue Yeti Microphone",
             price: 79.99,
             image: "/src/assets/mic.jpg",
             description: "Professional USB microphone with crystal-clear audio quality and noise cancellation. Perfect for streaming, podcasting, and gaming.",
@@ -144,7 +145,7 @@ export default function Home() {
         },
         {
             id: 16,
-            name: "Gaming PC",
+            name: "PreBuiltGaming PC",
             price: 1299.99,
             image: "/src/assets/pc.jpg",
             description: "High-end gaming PC with latest RTX graphics, Intel Core i9 processor, and liquid cooling. Ready for 4K gaming and VR experiences.",
@@ -153,7 +154,7 @@ export default function Home() {
         },
         {
             id: 17,
-            name: "Monitor",
+            name: "LG UltraGear Monitor",
             price: 249.99,
             image: "/src/assets/monitor.jpg",
             description: "27-inch 4K gaming monitor with 144Hz refresh rate, HDR support, and ultra-low input lag. Immerse yourself in stunning visuals.",
@@ -173,7 +174,7 @@ export default function Home() {
         },
         {
             id: 19,
-            name: "Knife",
+            name: "Knife Set",
             price: 29.99,
             image: "/src/assets/knife.jpg",
             description: "Professional-grade chef knife with razor-sharp stainless steel blade and ergonomic handle. Essential for precision cutting and food preparation.",
@@ -209,7 +210,7 @@ export default function Home() {
         },
         {
             id: 23,
-            name: "Espresso Machine",
+            name: "Breville Espresso Machine",
             price: 299.99,
             image: "/src/assets/espresso_machine.jpg",
             description: "Professional espresso machine with 15-bar pump pressure, milk frother, and programmable settings. Create café-quality drinks at home.",
@@ -218,7 +219,7 @@ export default function Home() {
         },
         {
             id: 24,
-            name: "Dust",
+            name: "Swiffer Duster",
             price: 10.99,
             image: "/src/assets/dust.jpg",
             description: "Premium dust collection system with multi-layer filtration and easy-empty design. Keeps your workspace clean and dust-free.",
@@ -256,7 +257,7 @@ export default function Home() {
         },
         {
             id: 28,
-            name: "Grass",
+            name: "Grass Seed",
             price: 12.99,
             image: "/src/assets/grass.jpg",
             description: "Premium grass seed mix for lush, green lawns. Drought-resistant blend perfect for residential and commercial landscaping.",
@@ -321,7 +322,7 @@ export default function Home() {
         },
         {
             id: 35,
-            name: "Vans",
+            name: "Old SkoolVans",
             price: 59.99,
             image: "/src/assets/vans.jpg",
             description: "Classic Vans Authentic sneakers with canvas upper, vulcanized sole, and timeless design. Perfect for casual wear and skateboarding.",
@@ -489,7 +490,7 @@ export default function Home() {
         // Shoes (58-61)
         {
             id: 58,
-            name: "Converse",
+            name: "Converse Shoes",
             price: 65.99,
             image: "/src/assets/converse.jpg",
             description: "Iconic Converse Chuck Taylor All Star sneakers with canvas upper and rubber sole. Timeless style for everyday wear.",
@@ -498,7 +499,7 @@ export default function Home() {
         },
         {
             id: 59,
-            name: "Nike",
+            name: "Nike Shoes",
             price: 89.99,
             image: "/src/assets/nike.jpg",
             description: "Nike Air Max running shoes with responsive cushioning, breathable mesh upper, and durable rubber outsole. Perfect for athletic performance.",
@@ -507,7 +508,7 @@ export default function Home() {
         },
         {
             id: 60,
-            name: "Adidas",
+            name: "Adidas Shoes",
             price: 79.99,
             image: "/src/assets/adidas.jpg",
             description: "Adidas Ultraboost running shoes with energy-returning boost midsole, Primeknit upper, and Continental rubber outsole for superior grip.",
@@ -716,6 +717,18 @@ export default function Home() {
 
     // Featured items (now using unified database)
     const featuredItems = getProductsByIds([1, 35, 7, 23, 11, 34, 9]);
+
+    // Store all products in localStorage for search functionality
+    useEffect(() => {
+        localStorage.setItem('allProducts', JSON.stringify(allProducts));
+        
+        // Also store products by category for existing category functionality
+        const categories = ['electronics', 'gaming', 'kitchen', 'outdoor', 'clothing', 'music', 'movies', 'seasonal', 'arts', 'fitness'];
+        categories.forEach(category => {
+            const categoryProducts = getProductsByCategory(category);
+            localStorage.setItem(`category_${category}`, JSON.stringify(categoryProducts));
+        });
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-50">
