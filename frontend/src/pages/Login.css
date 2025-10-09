@@ -23,6 +23,10 @@
     border-radius: 10px;
 }
 
+.login-page form input::placeholder{
+    color: white;
+}
+
 .login-page form button{
     padding: 12px;
     border-radius: 10px;
