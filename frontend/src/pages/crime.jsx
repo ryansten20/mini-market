@@ -11,10 +11,10 @@ export default function Crime() {
     const VIDs = [
         "0nKftIRQ92w",
         "jlJPnElXKM0",
+        "ZqHsuM07hXk",
         "mfVdeuzV-Ys",
         "J18K3ig-Rn0",
-        "yj_4A36E7do",
-        "Jwai2mXh1B0",
+        "PhVs14QmJdY"
     ];
 
     const settings = {
