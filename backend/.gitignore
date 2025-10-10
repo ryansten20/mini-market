@@ -1,6 +1,17 @@
 *.log
 .DS_Store
 .env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+.env.testing
+.env.development.local
+.env.production.local
+.env.staging.local
+.env.test.local
+.env.testing.local
 .env.backup
 .env.production
 .phpactor.json
