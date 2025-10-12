@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import "./Nav.css";
 
 export default function Nav() {
     const [searchQuery, setSearchQuery] = useState("");
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const navigate = useNavigate();
+    const { user, logout, isAuthenticated } = useAuth();
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -15,38 +17,62 @@ export default function Nav() {
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
+    };
+
     return (
         <nav className="nav-container">
             <div className="flex justify-between items-center">
                 <Link to="/" className="nav-brand">
                     <span className="nav-brand-highlight">Congo</span>
                 </Link>
-                <div className="nav-search-container">
-                    <form onSubmit={handleSearch} className="flex">
-                         <input 
-                             type="text" 
-                             placeholder="Search products..."
-                             className="nav-search-input"
-                             value={searchQuery}
-                             onChange={(e) => setSearchQuery(e.target.value)}
-                             onFocus={() => setIsSearchFocused(true)}
-                             onBlur={() => setIsSearchFocused(false)}
-                         />
-                         <button 
-                             type="submit" 
-                             className={`nav-search-button ${isSearchFocused ? 'nav-search-button-focused' : ''}`}
-                         >
-                             <i className="bi bi-search"></i>
-                         </button>
-                    </form>
-                </div>
+                {isAuthenticated() && (
+                    <div className="nav-search-container">
+                        <form onSubmit={handleSearch} className="flex">
+                             <input 
+                                 type="text" 
+                                 placeholder="Search products..."
+                                 className="nav-search-input"
+                                 value={searchQuery}
+                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                 onFocus={() => setIsSearchFocused(true)}
+                                 onBlur={() => setIsSearchFocused(false)}
+                             />
+                             <button 
+                                 type="submit" 
+                                 className={`nav-search-button ${isSearchFocused ? 'nav-search-button-focused' : ''}`}
+                             >
+                                 <i className="bi bi-search"></i>
+                             </button>
+                        </form>
+                    </div>
+                )}
                 
                 <div className="nav-links">
-                    <Link to="/" className="nav-link">Home</Link>
-                    <Link to="/crime" className="nav-link">Crime Video</Link>
-                    <Link to="/cart" className="nav-link">Cart</Link>
-                    <Link to="/login" className="nav-link">Login</Link>
-                    <Link to="/register" className="nav-link">Register</Link>
+                    {isAuthenticated() ? (
+                        <>
+                            <Link to="/" className="nav-link">Home</Link>
+                            <Link to="/crime" className="nav-link">Crime Video</Link>
+                            <Link to="/cart" className="nav-link">Cart</Link>
+                            <span className="nav-link" style={{color: '#4a5568'}}>
+                                Welcome, {user?.name || user?.email || 'User'}!
+                            </span>
+                            <button 
+                                onClick={handleLogout} 
+                                className="nav-link"
+                                style={{background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', textDecoration: 'none'}}
+                            >
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login" className="nav-link">Login</Link>
+                            <Link to="/register" className="nav-link">Register</Link>
+                        </>
+                    )}
                 </div>
             </div>
         </nav>

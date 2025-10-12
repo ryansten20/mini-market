@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect,  useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import BootstrapStarRating from "../components/BootstrapStarRating";
 import { CartContext } from "../context/CartContext";
+import { useProducts } from "../context/ProductContext";
 import "./Product.css";
 
 export default function Product() {
@@ -10,24 +11,30 @@ export default function Product() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { addToCart } = useContext(CartContext);
+    const { fetchProductById } = useProducts();
 
     useEffect(() => {
-        // Retrieve product data from localStorage
-        const storedProduct = localStorage.getItem(`product_${id}`);
-        
-        if (storedProduct) {
+        const loadProduct = async () => {
+            setLoading(true);
+            setError(null);
+            
             try {
-                const productData = JSON.parse(storedProduct);
-                setProduct(productData);
+                const productData = await fetchProductById(id);
+                if (productData) {
+                    setProduct(productData);
+                } else {
+                    setError("Product not found");
+                }
             } catch (err) {
-                setError("Error parsing product data");
+                console.error("Error fetching product:", err);
+                setError(err.message || "Error loading product");
+            } finally {
+                setLoading(false);
             }
-        } else {
-            setError("Product not found");
-        }
-        
-        setLoading(false);
-    }, [id]);
+        };
+
+        loadProduct();
+    }, [id, fetchProductById]);
 
     if (loading) {
         return (

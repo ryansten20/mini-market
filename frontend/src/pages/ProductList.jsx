@@ -1,76 +1,111 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import BootstrapStarRating from "../components/BootstrapStarRating";
+import { useProducts } from "../context/ProductContext";
 import "./ProductList.css";
 
 export default function ProductList() {
     const { category, query } = useParams();
     const navigate = useNavigate();
+    
+    const { 
+        fetchProductsByCategory, 
+        searchProducts: apiSearchProducts,
+        loading,
+        error 
+    } = useProducts();
+
+    const [products, setProducts] = useState([]);
+    const [localLoading, setLocalLoading] = useState(true);
 
     // Determine if this is a search or category view
     const isSearch = window.location.pathname.startsWith('/search/');
     const searchQuery = isSearch ? decodeURIComponent(query) : null;
 
-    // Get all products from localStorage
-    const getAllProducts = () => {
-        try {
-            const storedProducts = localStorage.getItem('allProducts');
-            return storedProducts ? JSON.parse(storedProducts) : [];
-        } catch (error) {
-            console.error('Error parsing all products from localStorage:', error);
-            return [];
-        }
-    };
-
-    // Get products by category from localStorage
-    const getCategoryProducts = () => {
-        try {
-            const storedProducts = localStorage.getItem(`category_${encodeURIComponent(category)}`);
-            return storedProducts ? JSON.parse(storedProducts) : [];
-        } catch (error) {
-            console.error('Error parsing category products from localStorage:', error);
-            return [];
-        }
-    };
-
-    // Search function to filter products
-    const searchProducts = (products, searchTerm) => {
-        if (!searchTerm) return products;
+    // Map display category names to internal category names
+    const getCategoryName = (displayName) => {
+        const categoryMap = {
+            'Games': 'gaming',
+            'Tools': 'outdoor',
+            'Audio': 'electronics',
+            'Kitchen': 'kitchen',
+            'Vinyl Records': 'music',
+            'Movies': 'movies',
+            'Shoes': 'clothing',
+            'Winter Clothing': 'clothing',
+            'Autum Clothing': 'clothing',
+            'Seasonal and Holiday': 'seasonal',
+            'Arts & Crafts': 'arts',
+            'Gym & Fitness': 'fitness'
+        };
         
-        const term = searchTerm.toLowerCase();
-        return products.filter(product => 
-            product.name.toLowerCase().includes(term) ||
-            product.description.toLowerCase().includes(term) ||
-            product.category.toLowerCase().includes(term)
-        );
+        return categoryMap[displayName] || displayName?.toLowerCase();
     };
 
-    // Get the appropriate products based on the route
-    const getProducts = () => {
-        if (isSearch) {
-            const allProducts = getAllProducts();
-            return searchProducts(allProducts, searchQuery);
-        } else {
-            return getCategoryProducts();
-        }
-    };
+    // Fetch products when component mounts or params change
+    useEffect(() => {
+        const loadProducts = async () => {
+            setLocalLoading(true);
+            try {
+                if (isSearch && searchQuery) {
+                    // Fetch search results
+                    const results = await apiSearchProducts(searchQuery);
+                    setProducts(results || []);
+                } else if (category) {
+                    // Map display name to internal category name
+                    const internalCategory = getCategoryName(category);
+                    
+                    // Fetch products by category
+                    const results = await fetchProductsByCategory(internalCategory);
+                    setProducts(results || []);
+                }
+            } catch (err) {
+                console.error("Error loading products:", err);
+                setProducts([]);
+            } finally {
+                setLocalLoading(false);
+            }
+        };
 
-    const products = getProducts();
+        loadProducts();
+    }, [category, searchQuery, isSearch, fetchProductsByCategory, apiSearchProducts]);
 
     const handleImageClick = (productId) => {
-        // Find the product data from the products array
-        const product = products.find(p => p.id === productId);
-        
-        if (product) {
-            // Store product data in localStorage
-            localStorage.setItem(`product_${productId}`, JSON.stringify(product));
-        }
-        
         navigate(`/products/${productId}`);
     };
 
-    const handleAddToCart = (productId) => {
-        console.log(`Added product ${productId} to cart`);
-    };
+    // Show loading state
+    if (localLoading) {
+        return (
+            <div className="product-list-container">
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                        <p className="mt-4 text-gray-600">Loading products...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state
+    if (error) {
+        return (
+            <div className="product-list-container">
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-center">
+                        <p className="text-red-600 mb-4">Error loading products: {error}</p>
+                        <button 
+                            onClick={() => window.location.reload()} 
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        >
+                            Retry
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="product-list-container">

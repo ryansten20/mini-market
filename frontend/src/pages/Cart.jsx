@@ -4,7 +4,7 @@ import "./cart.css";
 
 export default function Cart() {
     const { cart, updateQuantity, removeFromCart, clearCart } = useContext(CartContext);
-    const subtotal = cart.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
+    const subtotal = cart.reduce((acc, cur) => acc + parseFloat(cur.price) * cur.quantity, 0);
 
     if (cart.length === 0) {
         return <div className="cart">Your cart is empty.</div>;
@@ -21,7 +21,7 @@ export default function Cart() {
                         <img src={item.image} alt={item.name} />
                         <div>
                             <h2>{item.name}</h2>
-                            <p>${item.price.toFixed(2)}</p>
+                            <p>${parseFloat(item.price).toFixed(2)}</p>
                         </div>
                     </div>
 
@@ -31,7 +31,7 @@ export default function Cart() {
                             <span>{item.quantity}</span>
                             <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
                         </div>
-                        <p>Total: ${(item.price * item.quantity).toFixed(2)}</p>
+                        <p>Total: ${(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
                         <button onClick={() => removeFromCart(item.id)}>Remove</button>
                     </div>
                 </div>
