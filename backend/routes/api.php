@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 
 // ============================================
 // AUTHENTICATION ROUTES 
@@ -22,3 +23,8 @@ Route::get('/products/search', [ProductController::class, 'search']);
 Route::post('/products/by-ids', [ProductController::class, 'getByIds']);
 Route::get('/products/category/{category}', [ProductController::class, 'getByCategory']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
+
+// ============================================
+// ORDER ROUTES 
+// ============================================
+Route::post('/orders', [OrderController::class, 'checkout']);
